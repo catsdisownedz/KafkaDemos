@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Manager</title>
+    <style>
+        body {
+            font-family: "Lucida Sans Typewriter";
+            color: #440440;
+            background-color: #f6c0f2;
+            padding: 8em;
+        }
+        form {
+            background-color: #feecfc;
+            padding: 3em;
+            border-radius: 1em;
+            box-shadow: 0 0.0001em 0.0002em rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 0.8vw;
+            margin-top: 0.05em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: calc(100% - 22px);
+        }
+        button {
+            font-family: "Lucida Sans Typewriter";
+            margin-top: 2em;
+            background-color: #440440;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            opacity: 0.6;
+            color: #f6c0f2;
+        }
+        #payButton, #viewTransactionsButton {
+            display: none;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #440440;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        let usage, cost;
+
+        function calculatePayment() {
+            usage = Math.floor(Math.random() * (10000 - 100 + 1) + 100);
+            cost = Math.round(usage * 0.2 * 10) / 10; // 1MB costs 0.2 L.E
+            document.getElementById('paymentInfo').innerHTML = `Your usage is ${usage} MB, payment is: ${cost} L.E`;
+            document.getElementById('payButton').style.display = 'block';
+            document.getElementById('viewTransactionsButton').style.display = 'block';
+        }
+
+        async function handlePayment() {
+            const email = document.querySelector('[name="email"]').value;
+            const password = document.querySelector('[name="password"]').value;
+
+            const response = await fetch('/api/pay', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password, usage, cost })
+            });
+
+            if (response.ok) {
+                alert("An email has been sent to your inbox with the receipt :)");
+            } else {
+                alert("There was an issue with your payment. Please try again.");
+            }
+        }
+
+        async function viewTransactions() {
+            const email = document.querySelector('[name="email"]').value;
+            const response = await fetch(`/api/transactions?email=${email}`);
+            const data = await response.json();
+            const tableBody = document.querySelector("#transactionsTable tbody");
+            tableBody.innerHTML = "";
+
+            if (data.length === 0) {
+                alert("There were zero previous transactions.");
+            } else {
+                data.forEach(transaction => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${transaction.usage} MB</td>
+                        <td>${transaction.cost} L.E</td>
+                        <td>${transaction.date}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                document.getElementById("transactionsTable").style.display = 'table';
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Welcome! Enter your credentials to make the payment.</h1>
+<form onsubmit="calculatePayment(); event.preventDefault();">
+    <label>Email:
+        <input type="text" name="email" required>
+    </label>
+    <label>Password:
+        <input type="password" name="password" required>
+    </label>
+    <button type="submit">Submit</button>
+</form>
+
+<p id="paymentInfo" style="margin-top: 2em;"></p>
+
+<button id="payButton" onclick="handlePayment()">Pay</button>
+<button id="viewTransactionsButton" onclick="viewTransactions()">View Previous Transactions</button>
+
+<table id="transactionsTable" style="display: none; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th>Usage</th>
+        <th>Cost</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
