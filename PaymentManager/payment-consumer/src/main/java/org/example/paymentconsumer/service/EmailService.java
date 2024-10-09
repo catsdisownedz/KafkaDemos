@@ -1,6 +1,7 @@
 package org.example.paymentconsumer.service;
 
-import org.example.paymentproducer.entity.PaymentDetails;
+import org.example.common.*;
+import org.example.common.entity.PaymentDetails;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,8 +29,7 @@ public class EmailService {
                 "Banque du Zeina,\nYour fellow intern.");
 
         mailSender.send(message);
-
-        // Log the success of the email sent
+        
         System.out.println("Receipt email sent to: " + paymentDetails.getEmail());
     }
 }

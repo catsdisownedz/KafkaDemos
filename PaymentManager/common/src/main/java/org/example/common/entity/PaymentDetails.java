@@ -1,4 +1,4 @@
-package org.example.paymentproducer.entity;
+package org.example.common.entity;
 
 import java.io.Serializable;
 

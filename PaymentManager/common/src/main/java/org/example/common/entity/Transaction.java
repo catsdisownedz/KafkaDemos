@@ -1,7 +1,6 @@
-package org.example.paymentconsumer.entity;
+package org.example.common.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transaction")

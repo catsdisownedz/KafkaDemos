@@ -1,8 +1,9 @@
 package org.example.paymentproducer;
 
-import org.example.paymentconsumer.entity.CustomerProfile;
-import org.example.paymentproducer.entity.PaymentDetails;
-import org.example.paymentproducer.entity.PaymentRequest;
+
+import org.example.common.entity.CustomerProfile;
+import org.example.common.entity.PaymentDetails;
+import org.example.common.entity.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,7 +22,7 @@ public class PaymentController {
     private KafkaTemplate<String, PaymentDetails> kafkaTemplate;
     @Autowired
     private KafkaTemplate<String, String> stringKafkaTemplate;
-    private static final String TOPIC = "payments-topic";
+    private static final String PAYMENTS_TOPIC = "payments-topic";
     private static final String REQUEST_TRANSACTIONS_TOPIC = "request-transactions";
     private static final String RESPONSE_TRANSACTIONS_TOPIC = "response-transactions";
     private final Map<String, DeferredResult<List<?>>> pendingTransactionRequests = new HashMap<>();
@@ -35,7 +36,7 @@ public class PaymentController {
 
         PaymentDetails paymentDetails = new PaymentDetails(email, usage, cost, password, LocalDate.now().toString());
 
-        kafkaTemplate.send(TOPIC, paymentDetails);
+        kafkaTemplate.send(PAYMENTS_TOPIC, paymentDetails);
 
         return "Payment processed for " + email + ".";
     }
@@ -50,7 +51,7 @@ public class PaymentController {
     }
 
 
-    @KafkaListener(topics = RESPONSE_TRANSACTIONS_TOPIC, groupId = "transaction-group")
+    @KafkaListener(topics = RESPONSE_TRANSACTIONS_TOPIC, groupId = "report-group")
     public void handleTransactionResponse(CustomerProfile transactionResponse) {
         String email = transactionResponse.getEmail();
         if (pendingTransactionRequests.containsKey(email)) {

@@ -1,4 +1,4 @@
-package org.example.paymentproducer.entity;
+package org.example.common.entity;
 
 public class PaymentRequest {
     private String email;

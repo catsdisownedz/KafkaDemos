@@ -1,7 +1,7 @@
 {
   "namespace": "org.example.paymentproducer.entity",
   "type": "record",
-  "name": "PaymentDetails",
+  "name": "PaymentDetailsAvro",
   "fields": [
     {"name": "email", "type": "string"},
     {"name": "usage", "type": "double"},

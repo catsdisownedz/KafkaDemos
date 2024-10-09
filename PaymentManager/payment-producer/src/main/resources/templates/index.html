@@ -80,6 +80,12 @@
         async function viewTransactions() {
             const email = document.querySelector('[name="email"]').value;
             const response = await fetch(`/api/transactions?email=${email}`);
+
+            if (!response.ok) {
+                alert("Error retrieving transactions.");
+                return;
+            }
+
             const data = await response.json();
             const tableBody = document.querySelector("#transactionsTable tbody");
             tableBody.innerHTML = "";
@@ -90,15 +96,16 @@
                 data.forEach(transaction => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${transaction.usage} MB</td>
-                        <td>${transaction.cost} L.E</td>
-                        <td>${transaction.date}</td>
-                    `;
+                <td>${transaction.usage} MB</td>
+                <td>${transaction.cost} L.E</td>
+                <td>${transaction.date}</td>
+            `;
                     tableBody.appendChild(row);
                 });
-                document.getElementById("transactionsTable").style.display = 'table';
+                document.getElementById("transactionsTable").style.display = 'table'; // Show the table
             }
         }
+
     </script>
 </head>
 <body>

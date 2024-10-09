@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'com.github.davidmc24.gradle.plugin.avro' version '1.2.0'
 }
 
 group = 'org.example'
@@ -37,7 +36,7 @@ dependencies {
     implementation 'io.confluent:kafka-schema-registry-client:6.1.0'
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.3.4'
-
+    implementation project(':common')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -58,7 +57,21 @@ bootJar {
     mainClass = 'org.example.paymentconsumer.PaymentConsumerApplication'
 }
 
-avro {
-    source("src/main/avro")
-    outputDir file("src/main/java")
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/avro'
+        }
+    }
 }
+
+task generateAvroJava(type: JavaExec) {
+    main = 'org.apache.avro.tool.Main'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['compile', 'schema', 'src/main/avro/*.avsc', 'src/main/java']
+}
+
+compileJava.dependsOn generateAvroJava
