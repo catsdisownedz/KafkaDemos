@@ -29,7 +29,7 @@ public class EmailService {
 
         mailSender.send(message);
 
-        // Log the success of email sent
+        // Log the success of the email sent
         System.out.println("Receipt email sent to: " + paymentDetails.getEmail());
     }
 }

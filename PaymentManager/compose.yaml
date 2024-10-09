@@ -22,7 +22,7 @@ services:
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
     ports:
-      - "8081:8081"
+      - "8082:8081"
     depends_on:
       - kafka
 

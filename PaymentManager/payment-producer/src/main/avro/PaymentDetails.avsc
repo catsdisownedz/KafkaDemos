@@ -1,0 +1,12 @@
+{
+  "namespace": "org.example.paymentproducer.entity",
+  "type": "record",
+  "name": "PaymentDetails",
+  "fields": [
+    {"name": "email", "type": "string"},
+    {"name": "usage", "type": "double"},
+    {"name": "cost", "type": "double"},
+    {"name": "password", "type": "string"},
+    {"name": "transactionDate", "type": "string"}
+  ]
+}

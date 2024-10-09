@@ -1,0 +1,10 @@
+{
+  "namespace": "org.example.paymentconsumer.entity",
+  "type": "record",
+  "name": "Transaction",
+  "fields": [
+    {"name": "usage", "type": "double"},
+    {"name": "cost", "type": "double"},
+    {"name": "date", "type": "string"}
+  ]
+}

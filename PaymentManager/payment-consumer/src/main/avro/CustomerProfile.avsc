@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "name": "CustomerProfile",
+  "namespace": "org.example.paymentconsumer.entity",
+  "fields": [
+    {
+      "name": "id",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Primary key for customer profile, auto-generated"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "The customer's email, must be unique"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "doc": "The customer's password"
+    },
+    {
+      "name": "transactions",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Transaction",
+          "fields": [
+            { "name": "usage", "type": "double", "doc": "Data usage in MB" },
+            { "name": "cost", "type": "double", "doc": "Cost of the transaction in L.E" },
+            { "name": "date", "type": "string", "doc": "Date of the transaction" }
+          ]
+        }
+      },
+      "default": [],
+      "doc": "List of transactions associated with the customer profile"
+    }
+  ]
+}

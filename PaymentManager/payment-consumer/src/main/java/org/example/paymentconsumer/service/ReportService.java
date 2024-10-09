@@ -4,6 +4,7 @@ import org.example.paymentconsumer.entity.CustomerProfile;
 import org.example.paymentconsumer.entity.Transaction;
 import org.example.paymentconsumer.repository.CustomerProfileRepository;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +13,22 @@ import java.util.List;
 public class ReportService {
 
     private final CustomerProfileRepository customerProfileRepository;
+    private final KafkaTemplate<String, CustomerProfile> kafkaTemplate; // Using CustomerProfile for Avro serialization
 
-    public ReportService(CustomerProfileRepository customerProfileRepository) {
+    private static final String RESPONSE_TOPIC = "response-transactions";
+
+    public ReportService(CustomerProfileRepository customerProfileRepository, KafkaTemplate<String, CustomerProfile> kafkaTemplate) {
         this.customerProfileRepository = customerProfileRepository;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
-    @KafkaListener(topics = "payments-topic", groupId = "retrieve-profile")
-    public List<Transaction> getTransactionsByEmail(String email) {
+    @KafkaListener(topics = "request-transactions", groupId = "report-group")
+    public void handleRetrieveProfileRequest(String email) {
         CustomerProfile profile = customerProfileRepository.findByEmail(email);
-        if (profile != null) {
-            return profile.getTransactions();
+        if (profile == null) {
+            profile = new CustomerProfile();
+            profile.setEmail(email);
         }
-        return List.of();
+        kafkaTemplate.send(RESPONSE_TOPIC, profile);
     }
 }

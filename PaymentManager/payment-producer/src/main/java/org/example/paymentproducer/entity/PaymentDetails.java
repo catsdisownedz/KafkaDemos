@@ -9,6 +9,7 @@ public class PaymentDetails implements Serializable {
     private String password;
     private String transactionDate;
 
+    public PaymentDetails() {}
     public PaymentDetails(String email, double usage, double cost, String password, String transactionDate) {
         this.email = email;
         this.usage = usage;
